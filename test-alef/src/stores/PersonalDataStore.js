@@ -5,8 +5,6 @@ export const usePersonalDataStore = defineStore('personalDataStore', {
         data: [
             {
                 name: '',
-                surname: '',
-                patronymic: '',
                 age: null,
                 children: [
                     {

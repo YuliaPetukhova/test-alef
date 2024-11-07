@@ -27,6 +27,9 @@
   /*--color-background-soft: var(--vt-c-white-soft);*/
   /*--color-background-mute: var(--vt-c-white-mute);*/
   --color-primary: #01A7FD;
+  --color-grey: rgba(17, 17, 17, 0.48);
+  --color-black: rgb(17, 17, 17);
+  --color-greyL: #F1F1F1;
 
   /*--color-border: var(--vt-c-divider-light-2);*/
   /*--color-border-hover: var(--vt-c-divider-light-1);*/
@@ -63,7 +66,8 @@ body {
     'Fira Sans',
     'Droid Sans',
     'Helvetica Neue',
-    sans-serif;
+    'Montserrat',
+     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
