@@ -55,7 +55,6 @@ export default defineComponent({
 
 </script>
 
-
 <template>
     <div class="personal-container">
 
@@ -63,91 +62,103 @@ export default defineComponent({
 
         <div v-for="(adult, adultIndex) in personalDataStore.$state.data" :key="adultIndex">
 
-            <div class="name">
+            <div class="adult-data">
 
                 <div class="form-control">
 
-                    <label for="'adult-name-' + adultIndex">Имя</label><br>
+                    <label for="adult.name">Имя</label>
 
-                    <input type="text" id="'adult-name-' + adultIndex" v-model="adult.name" class="user-name"
-                           required><br>
+                    <input
+                        type="text"
+                        id="adult.name"
+                        v-model="adult.name"
+                        class="user-name"
+                        required
+                    >
                 </div>
 
                 <div class="form-control">
 
-                    <label for="'adult-age-' + adultIndex">Возраст</label><br>
-                    <input type="number" id="'adult-age-' + adultIndex" v-model="adult.age" class="user-age" min="14"
-                           required>
+                    <label for="adult.age">Возраст</label>
+                    <input
+                        type="number"
+                        id="adult.age"
+                        v-model="adult.age"
+                        class="user-age"
+                        min="14"
+                        required>
                 </div>
 
             </div>
 
             <div class="children-data">
-                <h2>Дети (макс.5)</h2>
 
-                <button type="submit" @click="addChild(adultIndex)">Добавить
-                    ребенка
-                </button>
+                <div class="children-data-header">
+                    <h2 class="title">Дети (макс.5)</h2>
+
+                    <button type="submit" v-if="personalDataStore.checkChildrenCount(adultIndex)"
+                            @click="addChild(adultIndex)" class="add-button">Добавить ребенка
+                    </button>
+                </div>
+
                 <div v-for="(child, childIndex) in adult.children" :key="childIndex">
-                    <div class="name">
+                    <div class="name children-container">
 
                         <div class="form-control">
-                            <label for="'child-name-' + adultIndex + '-' + childIndex">Имя</label><br>
+                            <label :for="'child-name-' + childIndex">Имя</label>
                             <input
                                 type="text"
-                                v-model="child.name" id="'child-name-' + adultIndex + '-' + childIndex"
-                                class="user-name"
+                                v-model="child.name"
+                                :id="'child-name-' + childIndex"
                                 required
-                            ><br>
+                            >
                         </div>
 
                         <div class="form-control">
 
-                            <label for="child-age">Возраст</label><br>
+                            <label :for="'child-age-' + childIndex">Возраст</label>
                             <input
                                 type="number"
                                 v-model="child.age"
-                                id="child-age"
+                                :id="'child-age-' + childIndex"
                                 class="user-age"
                                 min="0"
                                 required
                             >
                         </div>
 
-                        <button type="submit" @click="removeChild(adultIndex, childIndex)">Delete</button>
+                        <button type="submit" @click="removeChild(adultIndex, childIndex)" class="delete-button">
+                            Удалить
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button type="submit" @click="saveData">Save</button>
+        <button type="submit" @click="saveData" class="save-button">Сохранить</button>
     </div>
 
 </template>
 
 <style scoped>
 .personal-container {
+    display: block;
     width: 616px;
-    height: 166px;
-    display: flex;
     align-items: flex-start;
-    margin: 76px 375px 0 375px;
+    margin: 0 auto;
     flex-direction: column;
     justify-content: center;
 }
 
-.title {
-    color: var(--color-black);
-    margin-top: 30px;
-    margin-bottom: 20px;
-    line-height: 24px;
-    font-size: 16px;
-    font-family: 'Montserrat', sans-serif;
+.adult-data {
+    width: 616px;
+    font-family: Montserrat, sans-serif;
 }
 
 .form-control {
-    width: 616px;
-    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    height: 56px;
+    margin: 0 18px 10px 0;
     position: relative;
 }
 
@@ -163,6 +174,7 @@ export default defineComponent({
     color: var(--color-black);
     font-family: inherit;
     cursor: pointer;
+    padding: 0 0 0 16px;
 }
 
 input::-webkit-outer-spin-button,
@@ -175,11 +187,11 @@ input[type='number'] {
 }
 
 .form-control label {
+    padding: 3px 0 0 0;
     cursor: pointer;
     display: block;
     position: absolute;
     left: 15px;
-    top: 18px;
     color: #aaa;
     font-size: 13px;
     -webkit-transition: .2s;
@@ -190,5 +202,58 @@ input[type='number'] {
 .form-control input:focus + label {
     top: 0;
     font-size: 13px;
+}
+
+.children-data {
+    margin-top: 23px;
+}
+
+.children-data-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.add-button {
+    width: 204px;
+    height: 44px;
+    background: #fff;
+    border: 2px solid var(--color-primary);
+    border-radius: 24px;
+    font-size: 14px;
+    color: var(--color-primary);
+    line-height: 24px;
+    cursor: pointer;
+    margin-bottom: 11px;
+}
+
+.children-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+}
+
+.save-button {
+    background: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: 24px;
+    font-size: 16px;
+    font-family: Montserrat, sans-serif;
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin-top: 30px;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-family: Montserrat, sans-serif;
+    color: var(--color-primary);
+    cursor: pointer;
 }
 </style>

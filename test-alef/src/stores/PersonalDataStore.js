@@ -14,6 +14,7 @@ export const usePersonalDataStore = defineStore('personalDataStore', {
                 ]
             },
         ],
+        maxChildren: 5,
     }),
 
     actions: {
@@ -21,8 +22,12 @@ export const usePersonalDataStore = defineStore('personalDataStore', {
             localStorage.setItem('personalData', JSON.stringify(this.data));
         },
 
+        checkChildrenCount(adultIndex) {
+            return this.data[adultIndex].children.length < this.maxChildren;
+        },
+
         addChild(adultIndex, child) {
-            if (this.data[adultIndex].children.length < 5) {
+            if (this.data[adultIndex].children.length < this.maxChildren) {
                 this.data[adultIndex].children.push(child);
             }
         },

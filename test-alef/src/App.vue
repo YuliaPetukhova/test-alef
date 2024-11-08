@@ -3,32 +3,36 @@ import {RouterLink, RouterView} from 'vue-router'
 </script>
 
 <template>
-    <header class="header">
-        <div class="container">
-            <img src="./assets/logoAlef.svg" alt="Logo" class="logo">
+    <div>
 
-            <nav class="menu">
-                <RouterLink to="/form" class="nav-form">Форма</RouterLink>
-                <RouterLink to="/preview">Превью</RouterLink>
-            </nav>
-        </div>
-    </header>
+        <header class="header">
+            <div class="container">
+                <img src="./assets/logoAlef.svg" alt="Logo" class="logo">
 
-    <RouterView/>
+                <nav class="menu">
+                    <RouterLink to="/form" class="nav-form">Форма</RouterLink>
+                    <RouterLink to="/preview">Превью</RouterLink>
+                </nav>
+            </div>
+        </header>
+
+        <RouterView/>
+        <footer class="footer">
+            <div class="rights">all rights reserved</div>
+        </footer>
+    </div>
 </template>
 
 <style scoped>
 .header {
     height: 76px;
-    display: flex;
     align-items: center;
+    padding: 1rem;
 }
 
 .container {
     display: flex;
     align-items: center;
-    justify-content: normal;
-    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -53,5 +57,20 @@ a {
 .menu {
     margin-left: 432px;
     margin-right: 574px;
+}
+
+.footer {
+    padding: 136px 0 0 0;
+    margin: 0 ;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.rights {
+    background-color: var(--color-greyM);
+    padding: 30px 0;
+    color: black;
 }
 </style>
