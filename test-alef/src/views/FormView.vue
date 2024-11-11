@@ -1,44 +1,76 @@
 <script>
 import {usePersonalDataStore} from "@/stores/PersonalDataStore.js";
-import {defineComponent, ref} from "vue";
+import {defineComponent} from "vue";
 import {useRouter} from 'vue-router';
+import FormInput from "@/components/FormInput.vue";
 
 export default defineComponent({
 
-        setup() {
-            const personalDataStore = usePersonalDataStore()
-            const data = ref(personalDataStore.data)
-            const router = useRouter();
+    components: {FormInput},
 
-            return {
-                personalDataStore,
-                data,
-                router
+    setup() {
+        const personalDataStore = usePersonalDataStore()
+        const router = useRouter();
+
+        return {
+            personalDataStore,
+            router,
+            parentData: '',
             };
         },
 
+        data() {
+            return {
+                adult: {
+                    name: null,
+                    age: null,
+                    children: [],
+                },
+                maxChildrenNumber: 5,
+            }
+        },
+
         methods: {
-            addChild(adultIndex) {
-                this.personalDataStore.addChild(adultIndex, {name: '', age: null});
+            addChild() {
+                this.adult.children.push({name: '', age: null});
             },
 
-            removeChild(adultIndex, childIndex) {
-                this.personalDataStore.removeChild(adultIndex, childIndex);
+            checkChildrenCount() {
+                return this.adult.children.length < this.maxChildrenNumber;
             },
 
-            saveData() {
-                console.log('Saved Data:', this.personalDataStore.data);
-                this.personalDataStore.saveData();
-                this.router.push({name: 'Preview'});
+            removeChild(childIndex) {
+                this.adult.children = this.adult.children.filter((child, index) => index !== childIndex);
+            },
+
+            saveData() {jg
+                let isValid = true;
+                let errorMessage = '';
+                if (this.adult.age < 14) {
+                    isValid = false;
+                    errorMessage = 'Минимальный возраст для взрослого - 14 лет.';
+                }
+                this.adult.children.forEach(child => {
+                    if (child.age < 0) {
+                        isValid = false;
+                        errorMessage = 'Возраст ребёнка не может быть отрицательным.';
+                    }
+                });
+                if (isValid) {
+                    this.personalDataStore.saveData(this.adult);
+                    this.router.push({name: 'Preview'});
+                } else {
+                    alert(errorMessage);
+                }
+
             },
 
             resetForm() {
-                this.personalDataStore.data.forEach(adult => {
-                        adult.name = '';
-                        adult.age = null;
-                        adult.children = [];
-                    }
-                );
+                this.adult = {
+                    name: null,
+                    age: null,
+                    children: [],
+                }
             },
 
         },
@@ -60,34 +92,27 @@ export default defineComponent({
 
         <h1 class="title">Персональные данные</h1>
 
-        <div v-for="(adult, adultIndex) in personalDataStore.$state.data" :key="adultIndex">
+        <div>
 
             <div class="adult-data">
 
-                <div class="form-control">
+                <FormInput
+                    label="Имя"
+                    v-model="adult.name"
+                    :inputId="'adult-name-'"
+                    inputClass="user-name"
+                    :modelValue="parentData"
+                    @update:modelValue="parentData = $event"
+                />
 
-                    <label for="adult.name">Имя</label>
-
-                    <input
-                        type="text"
-                        id="adult.name"
-                        v-model="adult.name"
-                        class="user-name"
-                        required
-                    >
-                </div>
-
-                <div class="form-control">
-
-                    <label for="adult.age">Возраст</label>
-                    <input
-                        type="number"
-                        id="adult.age"
-                        v-model="adult.age"
-                        class="user-age"
-                        min="14"
-                        required>
-                </div>
+                <FormInput
+                    label="Возраст"
+                    type="number"
+                    v-model="adult.age"
+                    :inputId="'adult-age-'"
+                    inputClass="user-age"
+                    :min="14"
+                />
 
             </div>
 
@@ -96,38 +121,30 @@ export default defineComponent({
                 <div class="children-data-header">
                     <h2 class="title">Дети (макс.5)</h2>
 
-                    <button type="submit" v-if="personalDataStore.checkChildrenCount(adultIndex)"
-                            @click="addChild(adultIndex)" class="add-button">Добавить ребенка
+                    <button type="submit" v-if="this.checkChildrenCount()"
+                            @click="addChild()" class="add-button">Добавить ребенка
                     </button>
                 </div>
 
                 <div v-for="(child, childIndex) in adult.children" :key="childIndex">
                     <div class="name children-container">
 
-                        <div class="form-control">
-                            <label :for="'child-name-' + childIndex">Имя</label>
-                            <input
-                                type="text"
-                                v-model="child.name"
-                                :id="'child-name-' + childIndex"
-                                required
-                            >
-                        </div>
+                        <FormInput
+                            label="Имя"
+                            v-model="child.name"
+                            :inputId="'child-name-' + childIndex"
+                        />
 
-                        <div class="form-control">
+                        <FormInput
+                            label="Возраст"
+                            type="number"
+                            v-model="child.age"
+                            :inputId="'child-age-' + childIndex"
+                            inputClass="user-age"
+                            :min="0"
+                        />
 
-                            <label :for="'child-age-' + childIndex">Возраст</label>
-                            <input
-                                type="number"
-                                v-model="child.age"
-                                :id="'child-age-' + childIndex"
-                                class="user-age"
-                                min="0"
-                                required
-                            >
-                        </div>
-
-                        <button type="submit" @click="removeChild(adultIndex, childIndex)" class="delete-button">
+                        <button type="submit" @click="removeChild(childIndex)" class="delete-button">
                             Удалить
                         </button>
                     </div>
@@ -153,55 +170,6 @@ export default defineComponent({
 .adult-data {
     width: 616px;
     font-family: Montserrat, sans-serif;
-}
-
-.form-control {
-    width: 100%;
-    height: 56px;
-    margin: 0 18px 10px 0;
-    position: relative;
-}
-
-.form-control input {
-    display: block;
-    outline: none;
-    width: 100%;
-    height: 56px;
-    background: #fff;
-    border: 1px solid var(--color-greyL);
-    border-radius: 6px;
-    font-size: 13px;
-    color: var(--color-black);
-    font-family: inherit;
-    cursor: pointer;
-    padding: 0 0 0 16px;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-
-input[type='number'] {
-    -moz-appearance: textfield;
-}
-
-.form-control label {
-    padding: 3px 0 0 0;
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    left: 15px;
-    color: #aaa;
-    font-size: 13px;
-    -webkit-transition: .2s;
-    transition: .2s;
-}
-
-.form-control input:valid + label,
-.form-control input:focus + label {
-    top: 0;
-    font-size: 13px;
 }
 
 .children-data {

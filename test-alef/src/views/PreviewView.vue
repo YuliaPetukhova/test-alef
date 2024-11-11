@@ -5,10 +5,10 @@ import {usePersonalDataStore} from "@/stores/PersonalDataStore.js";
 export default defineComponent({
     setup() {
         const personalDataStore = usePersonalDataStore();
-        console.log(personalDataStore, 'personalDataStore')
+        const adult = personalDataStore.data;
 
         return {
-            personalDataStore,
+            adult,
         };
     },
 
@@ -35,7 +35,7 @@ export default defineComponent({
     <div class="preview-container">
         <p class="title">Персональные данные</p>
 
-        <div v-for="(adult, adultIndex) in personalDataStore.data" :key="adultIndex">
+        <div>
             <div class="title-bold" v-if="adult.age !== null">
                 {{ adult.name + ', '}}{{ adult.age }}{{ getAgeSuffix(adult.age) }}
             </div>
@@ -51,6 +51,7 @@ export default defineComponent({
             </div>
         </div>
     </div>
+
 </template>
 
 <style scoped>
