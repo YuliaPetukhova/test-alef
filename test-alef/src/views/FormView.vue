@@ -43,7 +43,7 @@ export default defineComponent({
                 this.adult.children = this.adult.children.filter((child, index) => index !== childIndex);
             },
 
-            saveData() {jg
+            saveData() {
                 let isValid = true;
                 let errorMessage = '';
                 if (this.adult.age < 14) {
