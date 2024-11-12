@@ -15,75 +15,56 @@ export default defineComponent({
         return {
             personalDataStore,
             router,
-            parentData: '',
-            };
-        },
+        };
+    },
 
-        data() {
-            return {
-                adult: {
-                    name: null,
-                    age: null,
-                    children: [],
-                },
-                maxChildrenNumber: 5,
-            }
-        },
-
-        methods: {
-            addChild() {
-                this.adult.children.push({name: '', age: null});
+    data() {
+        return {
+            adult: {
+                name: null,
+                age: null,
+                children: [],
             },
-
-            checkChildrenCount() {
-                return this.adult.children.length < this.maxChildrenNumber;
-            },
-
-            removeChild(childIndex) {
-                this.adult.children = this.adult.children.filter((child, index) => index !== childIndex);
-            },
-
-            saveData() {
-                let isValid = true;
-                let errorMessage = '';
-                if (this.adult.age < 14) {
-                    isValid = false;
-                    errorMessage = 'Минимальный возраст для взрослого - 14 лет.';
-                }
-                this.adult.children.forEach(child => {
-                    if (child.age < 0) {
-                        isValid = false;
-                        errorMessage = 'Возраст ребёнка не может быть отрицательным.';
-                    }
-                });
-                if (isValid) {
-                    this.personalDataStore.saveData(this.adult);
-                    this.router.push({name: 'Preview'});
-                } else {
-                    alert(errorMessage);
-                }
-
-            },
-
-            resetForm() {
-                this.adult = {
-                    name: null,
-                    age: null,
-                    children: [],
-                }
-            },
-
-        },
-        watch: {
-            '$route': {
-                handler() {
-                    this.resetForm();
-                },
-                immediate: true
-            }
+            maxChildrenNumber: 5,
         }
-    }
-)
+    },
+
+    methods: {
+        addChild() {
+            this.adult.children.push({name: '', age: null});
+        },
+
+        checkChildrenCount() {
+            return this.adult.children.length < this.maxChildrenNumber;
+        },
+
+        removeChild(childIndex) {
+            this.adult.children = this.adult.children.filter((child, index) => index !== childIndex);
+        },
+
+        saveData() {
+            let isValid = true;
+            let errorMessage = '';
+            if (this.adult.age < 14) {
+                isValid = false;
+                errorMessage = 'Минимальный возраст для взрослого - 14 лет.';
+            }
+            this.adult.children.forEach(child => {
+                if (child.age < 0) {
+                    isValid = false;
+                    errorMessage = 'Возраст ребёнка не может быть отрицательным.';
+                }
+            });
+            if (isValid) {
+                this.personalDataStore.saveData(this.adult);
+                this.router.push({name: 'Preview'});
+            } else {
+                alert(errorMessage);
+            }
+        },
+
+    },
+})
 
 </script>
 
@@ -101,8 +82,6 @@ export default defineComponent({
                     v-model="adult.name"
                     :inputId="'adult-name-'"
                     inputClass="user-name"
-                    :modelValue="parentData"
-                    @update:modelValue="parentData = $event"
                 />
 
                 <FormInput
@@ -121,8 +100,14 @@ export default defineComponent({
                 <div class="children-data-header">
                     <h2 class="title">Дети (макс.5)</h2>
 
-                    <button type="submit" v-if="this.checkChildrenCount()"
-                            @click="addChild()" class="add-button">Добавить ребенка
+                    <button
+                        type="submit"
+                        v-if="this.checkChildrenCount()"
+                        @click="addChild()"
+                        class="add-button"
+                    >
+                        <img class="add-plus" src="../assets/plus.svg" alt="Plus add child">
+                        Добавить ребенка
                     </button>
                 </div>
 
@@ -186,6 +171,13 @@ export default defineComponent({
 .add-button {
     width: 204px;
     height: 44px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+
     background: #fff;
     border: 2px solid var(--color-primary);
     border-radius: 24px;
@@ -194,6 +186,10 @@ export default defineComponent({
     line-height: 24px;
     cursor: pointer;
     margin-bottom: 11px;
+}
+
+.add-plus {
+    margin-right: 4px;
 }
 
 .children-container {

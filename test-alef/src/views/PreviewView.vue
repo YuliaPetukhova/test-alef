@@ -4,8 +4,7 @@ import {usePersonalDataStore} from "@/stores/PersonalDataStore.js";
 
 export default defineComponent({
     setup() {
-        const personalDataStore = usePersonalDataStore();
-        const adult = personalDataStore.data;
+        const adult = usePersonalDataStore().data;
 
         return {
             adult,
@@ -36,7 +35,7 @@ export default defineComponent({
         <p class="title">Персональные данные</p>
 
         <div>
-            <div class="title-bold" v-if="adult.age !== null">
+            <div class="title-bold" v-if="adult.age !== null && adult.age !== undefined">
                 {{ adult.name + ', '}}{{ adult.age }}{{ getAgeSuffix(adult.age) }}
             </div>
 
