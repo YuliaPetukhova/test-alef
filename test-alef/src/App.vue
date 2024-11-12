@@ -27,12 +27,14 @@ import {RouterLink, RouterView} from 'vue-router'
 .header {
     height: 76px;
     align-items: center;
+
     padding: 1rem;
 }
 
 .container {
     display: flex;
     align-items: center;
+
     margin: 0 auto;
 }
 
@@ -60,17 +62,19 @@ a {
 }
 
 .footer {
+    width: 100%;
+
     padding: 136px 0 0 0;
     margin: 0 ;
     text-align: center;
     position: relative;
     bottom: 0;
-    width: 100%;
 }
 
 .rights {
-    background-color: var(--color-greyM);
     padding: 30px 0;
+
+    background-color: var(--color-greyM);
     color: black;
 }
 </style>

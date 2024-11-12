@@ -8,7 +8,6 @@ export const usePersonalDataStore = defineStore('personalDataStore', {
     actions: {
         saveData(adult) {
             this.data = adult;
-            localStorage.setItem('personalData', JSON.stringify(this.data));
         },
     }
 });

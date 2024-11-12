@@ -4,6 +4,8 @@
     --color-black: rgb(17, 17, 17);
     --color-greyL: #F1F1F1;
     --color-greyM: #FAFAFA;
+    --color-error-title: #DB524E;
+    --color-error-background: #F9E3E3;
 }
 
 *,

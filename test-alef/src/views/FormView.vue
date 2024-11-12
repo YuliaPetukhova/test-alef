@@ -2,11 +2,11 @@
 import {usePersonalDataStore} from "@/stores/PersonalDataStore.js";
 import {defineComponent} from "vue";
 import {useRouter} from 'vue-router';
-import FormInput from "@/components/FormInput.vue";
+import FormInputs from "@/components/FormInputs.vue";
 
 export default defineComponent({
 
-    components: {FormInput},
+    components: {FormInputs},
 
     setup() {
         const personalDataStore = usePersonalDataStore()
@@ -26,6 +26,7 @@ export default defineComponent({
                 children: [],
             },
             maxChildrenNumber: 5,
+            minAdultAgeNumber: 16,
         }
     },
 
@@ -43,26 +44,14 @@ export default defineComponent({
         },
 
         saveData() {
-            let isValid = true;
-            let errorMessage = '';
-            if (this.adult.age < 14) {
-                isValid = false;
-                errorMessage = 'Минимальный возраст для взрослого - 14 лет.';
+            const form = event.target;
+            if (!form.checkValidity()) {
+                return;
             }
-            this.adult.children.forEach(child => {
-                if (child.age < 0) {
-                    isValid = false;
-                    errorMessage = 'Возраст ребёнка не может быть отрицательным.';
-                }
-            });
-            if (isValid) {
-                this.personalDataStore.saveData(this.adult);
-                this.router.push({name: 'Preview'});
-            } else {
-                alert(errorMessage);
-            }
-        },
 
+            this.personalDataStore.saveData(this.adult);
+            this.router.push({name: 'Preview'});
+        },
     },
 })
 
@@ -73,83 +62,58 @@ export default defineComponent({
 
         <h1 class="title">Персональные данные</h1>
 
-        <div>
+        <form @submit.prevent="saveData">
 
-            <div class="adult-data">
-
-                <FormInput
-                    label="Имя"
-                    v-model="adult.name"
-                    :inputId="'adult-name-'"
-                    inputClass="user-name"
-                />
-
-                <FormInput
-                    label="Возраст"
-                    type="number"
-                    v-model="adult.age"
-                    :inputId="'adult-age-'"
-                    inputClass="user-age"
-                    :min="14"
-                />
-
-            </div>
-
-            <div class="children-data">
-
-                <div class="children-data-header">
-                    <h2 class="title">Дети (макс.5)</h2>
-
-                    <button
-                        type="submit"
-                        v-if="this.checkChildrenCount()"
-                        @click="addChild()"
-                        class="add-button"
-                    >
-                        <img class="add-plus" src="../assets/plus.svg" alt="Plus add child">
-                        Добавить ребенка
-                    </button>
+            <div>
+                <div class="adult-data">
+                    <FormInputs v-model="adult" :min="minAdultAgeNumber"></FormInputs>
                 </div>
 
-                <div v-for="(child, childIndex) in adult.children" :key="childIndex">
-                    <div class="name children-container">
+                <div class="children-data">
 
-                        <FormInput
-                            label="Имя"
-                            v-model="child.name"
-                            :inputId="'child-name-' + childIndex"
-                        />
+                    <div class="children-data-header">
+                        <h2 class="title">Дети (макс.{{maxChildrenNumber}})</h2>
 
-                        <FormInput
-                            label="Возраст"
-                            type="number"
-                            v-model="child.age"
-                            :inputId="'child-age-' + childIndex"
-                            inputClass="user-age"
-                            :min="0"
-                        />
-
-                        <button type="submit" @click="removeChild(childIndex)" class="delete-button">
-                            Удалить
+                        <button
+                            type="submit"
+                            v-if="this.checkChildrenCount()"
+                            @click="addChild()"
+                            class="add-button"
+                        >
+                            <img class="add-plus" src="../assets/plus.svg" alt="Plus add child">
+                            Добавить ребенка
                         </button>
+                    </div>
+
+                    <div v-for="(child, childIndex) in adult.children" :key="childIndex">
+                        <div class="name children-container">
+
+                            <FormInputs v-model="adult.children[childIndex]"></FormInputs>
+
+                            <button type="submit" @click="removeChild(childIndex)" class="delete-button">
+                                Удалить
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <button type="submit" @click="saveData" class="save-button">Сохранить</button>
+            <button type="submit" class="save-button">Сохранить</button>
+        </form>
     </div>
 
 </template>
 
 <style scoped>
 .personal-container {
-    display: block;
     width: 616px;
+
+    display: block;
     align-items: flex-start;
-    margin: 0 auto;
     flex-direction: column;
     justify-content: center;
+
+    margin: 0 auto;
 }
 
 .adult-data {
@@ -201,15 +165,18 @@ export default defineComponent({
 }
 
 .save-button {
+    padding: 10px 20px;
+    margin-top: 30px;
+
     background: var(--color-primary);
+
     border: 2px solid var(--color-primary);
     border-radius: 24px;
+
     font-size: 16px;
     font-family: Montserrat, sans-serif;
     color: white;
     cursor: pointer;
-    padding: 10px 20px;
-    margin-top: 30px;
 }
 
 .delete-button {

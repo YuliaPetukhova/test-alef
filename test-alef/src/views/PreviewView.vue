@@ -27,7 +27,6 @@ export default defineComponent({
         }
     }
 })
-
 </script>
 
 <template>
@@ -36,7 +35,7 @@ export default defineComponent({
 
         <div>
             <div class="title-bold" v-if="adult.age !== null && adult.age !== undefined">
-                {{ adult.name + ', '}}{{ adult.age }}{{ getAgeSuffix(adult.age) }}
+                {{ adult.name + ', ' }}{{ adult.age }} {{ getAgeSuffix(adult.age) }}
             </div>
 
             <div class="children-container">
@@ -44,7 +43,7 @@ export default defineComponent({
 
                 <div class="children" v-for="(child, childIndex) in adult.children" :key="childIndex">
                     <div class="title-bold" v-if="child.age !== null">
-                        {{ child.name + ', '}}{{ child.age }} {{ getAgeSuffix(child.age) }}
+                        {{ child.name + ', ' }}{{ child.age }} {{ getAgeSuffix(child.age) }}
                     </div>
                 </div>
             </div>
