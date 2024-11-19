@@ -35,11 +35,9 @@ export default {
                 ...this.modelValue,
                 age: newAge
             })
-            this.validateInput(event)
+            this.validateInput(newAge)
         },
-        validateInput(event) {
-            let value = event.target.value;
-
+        validateInput(value) {
             if (this.min !== null && value < this.min) {
                 this.isValid = true;
                 this.errorMessage = `Минимальный возраст ${this.min} лет`;
@@ -48,6 +46,7 @@ export default {
                 this.errorMessage = '';
             }
         }
+
     }
 }
 </script>
@@ -71,8 +70,7 @@ export default {
             :min="min"
             required
             @input="updateAge($event)"
-            :class="[{ 'isValid': isValid }, inputClass]"
-        />
+            :class="{ 'isValid': isValid }"/>
         <div v-if="isValid" class="error-message">{{ errorMessage }}</div>
     </div>
 </template>

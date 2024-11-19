@@ -8,18 +8,10 @@ export default defineComponent({
 
     components: {FormInputs},
 
-    setup() {
-        const personalDataStore = usePersonalDataStore()
-        const router = useRouter();
-
-        return {
-            personalDataStore,
-            router,
-        };
-    },
-
     data() {
         return {
+            personalDataStore: usePersonalDataStore(),
+            router: useRouter(),
             adult: {
                 name: null,
                 age: null,
@@ -27,7 +19,7 @@ export default defineComponent({
             },
             maxChildrenNumber: 5,
             minAdultAgeNumber: 16,
-        }
+        };
     },
 
     methods: {
@@ -43,7 +35,7 @@ export default defineComponent({
             this.adult.children = this.adult.children.filter((child, index) => index !== childIndex);
         },
 
-        saveData() {
+        saveData(event) {
             const form = event.target;
             if (!form.checkValidity()) {
                 return;
@@ -72,11 +64,11 @@ export default defineComponent({
                 <div class="children-data">
 
                     <div class="children-data-header">
-                        <h2 class="title">Дети (макс.{{maxChildrenNumber}})</h2>
+                        <h2 class="title">Дети (макс.{{ maxChildrenNumber }})</h2>
 
                         <button
-                            type="submit"
-                            v-if="this.checkChildrenCount()"
+                            type="button"
+                            v-if="checkChildrenCount()"
                             @click="addChild()"
                             class="add-button"
                         >
@@ -90,7 +82,7 @@ export default defineComponent({
 
                             <FormInputs v-model="adult.children[childIndex]"></FormInputs>
 
-                            <button type="submit" @click="removeChild(childIndex)" class="delete-button">
+                            <button type="button" @click="removeChild(childIndex)" class="delete-button">
                                 Удалить
                             </button>
                         </div>
