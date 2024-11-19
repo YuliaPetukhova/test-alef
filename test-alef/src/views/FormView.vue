@@ -22,13 +22,19 @@ export default defineComponent({
         };
     },
 
+    computed: {
+        canAddChild() {
+            return this.adult.children.length < this.maxChildrenNumber;
+        },
+
+        isAdultAgeValid() {
+            return this.adult.age >= this.minAdultAgeNumber;
+        }
+    },
+
     methods: {
         addChild() {
             this.adult.children.push({name: '', age: null});
-        },
-
-        checkChildrenCount() {
-            return this.adult.children.length < this.maxChildrenNumber;
         },
 
         removeChild(childIndex) {
@@ -68,7 +74,7 @@ export default defineComponent({
 
                         <button
                             type="button"
-                            v-if="checkChildrenCount()"
+                            v-if="canAddChild"
                             @click="addChild()"
                             class="add-button"
                         >

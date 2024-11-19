@@ -22,6 +22,23 @@ export default {
             errorMessage: '',
         };
     },
+
+    computed: {
+        isValid() {
+            return this.modelValue.age >= this.min;
+        }
+    },
+
+    watch: {
+        isValid(newValue) {
+            if (!newValue) {
+                this.errorMessage = `Минимальный возраст ${this.min} лет`;
+            } else {
+                this.errorMessage = '';
+            }
+        }
+    },
+
     methods: {
         updateName(event) {
             this.$emit('update:modelValue', {
@@ -30,23 +47,12 @@ export default {
             })
         },
         updateAge(event) {
-            const newAge = event.target.value
+            const newAge = event.target.value;
             this.$emit('update:modelValue', {
                 ...this.modelValue,
                 age: newAge
             })
-            this.validateInput(newAge)
         },
-        validateInput(value) {
-            if (this.min !== null && value < this.min) {
-                this.isValid = true;
-                this.errorMessage = `Минимальный возраст ${this.min} лет`;
-            } else {
-                this.isValid = false;
-                this.errorMessage = '';
-            }
-        }
-
     }
 }
 </script>
@@ -71,7 +77,7 @@ export default {
             required
             @input="updateAge($event)"
             :class="{ 'isValid': isValid }"/>
-        <div v-if="isValid" class="error-message">{{ errorMessage }}</div>
+        <div v-if="!isValid" class="error-message">{{ errorMessage }}</div>
     </div>
 </template>
 
